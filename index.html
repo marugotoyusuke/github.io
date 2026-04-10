@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<script type="module" src="https://code4fukui.github.io/eggl/fragment-shader.js"></script>
+<fragment-shader hidden>#version 300 es
+precision highp float;
+
+uniform float time;
+uniform vec2  mouse;
+uniform vec2  resolution;
+out vec4 outColor;
+
+void main(void) {
+  // マウスカーソルの座標を(0.0,0.0)-(1.0,1.0)に変換した2次元ベクトル m を計算
+  vec2 m = vec2(mouse.x * 2.0 - 1.0, -mouse.y * 2.0 + 1.0);
+  // 画面内の点の座標を(0.0,0.0)-(1.0,1.0)に変換した2次元ベクトル p を計算
+  vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+  // マウスカーソルと画面内の点との距離 l を計算
+  vec2 d = m - p;
+  float th = atan(d.y, d.x);
+  float l = length(d);
+  // 適当にいじる
+  l += sin(th * 5.0 + time * 3.0) * .06;
+  // シマシマにする
+  if (mod(l, 0.2) < 0.05) {
+    outColor = vec4(1.0, 0.8, 0.8, 1.0);
+  } else {
+    outColor = vec4(2.0, 1.0, 1.0, 1.0);
+  }
+}
+
+// GLSLリファレンス https://docs.gl/
+</fragment-shader>
+
+<style>
+body {
+  margin: 0;
+}
+main {
+  margin: 1em;
+}
+fragment-shader {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  z-index: -1;
+}
+</style>
+
+</body></html>
+
+
